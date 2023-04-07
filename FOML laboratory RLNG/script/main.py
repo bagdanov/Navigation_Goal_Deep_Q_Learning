@@ -40,8 +40,6 @@ class DQLN(nn.Module):
         return self.layer3(x)
 
 
-SCAN_RANGE_MAX = 15.0
-SCAN_RANGE_MIN = 0.2
 MAX_DISTANCE = 15.0
 MIN_DISTANCE = 0.2
 
@@ -49,9 +47,7 @@ MIN_DISTANCE = 0.2
 def normalize(state: np.ndarray) -> np.ndarray:
     nornmalized_state = np.ndarray(shape=state.shape, dtype=np.float64)
     for i in range(len(state)):
-        if i < 16:
-            nornmalized_state[i] = (state[i] - SCAN_RANGE_MIN) / (SCAN_RANGE_MAX - SCAN_RANGE_MIN)
-        elif i == 16:
+        if i < 17:
             nornmalized_state[i] = (state[i] - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE)
         else:
             nornmalized_state[i] = state[i] / math.pi
