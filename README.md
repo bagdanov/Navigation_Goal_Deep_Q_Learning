@@ -9,7 +9,7 @@ In script/main.py file you can find the MLP net definition (via PyTorch library)
 
 In "neural_network" directory you will find two ".pth" files, one is the best net which I was able to get whereas the other is a good point for start a pretrained session. Set as you want all the various parameters in script/main.py, gym_navigation/envs/navigation_goal.py and in gym_navigation/envs/navigation_track.py and start to train your agent, enjoy!
 
-For more information take a look at the pdf
+For more information take a look at the Presentazione_Laboratorio_FOML.pdf. 
 
 Some "try to" advices:
 
