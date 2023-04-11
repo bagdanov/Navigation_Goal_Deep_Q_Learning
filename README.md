@@ -15,6 +15,6 @@ Some "try to" advices:
 
 - Use a Long Short Term Memory (LSTM) instead of the MLP network for a hopefully better agent future planning
 
-- Increases the agent's possible actions and mobility
+- Increase the agent's possible actions and mobility
 
 - Increase the number of training episodes
