@@ -17,4 +17,4 @@ Some "try to" advices:
 
 - Increases the agent's possible actions and mobility
 
-- Try to increase the number of training episodes
+- Increase the number of training episodes
