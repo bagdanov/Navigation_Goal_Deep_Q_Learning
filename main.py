@@ -204,7 +204,7 @@ if TRAIN:
                     writer.add_scalars('Reward', {'policy_net': reward}, i_episode)
                     break
 
-    PATH = '../neural_network/last.pth'
+    PATH = '../checkpoints/last.pth'
     torch.save(policy_net.state_dict(), PATH)
     writer.close()
     env.close()
