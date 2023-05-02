@@ -181,7 +181,6 @@ if TRAIN:
             # for key in policy_net_state_dict:
             #     target_net_state_dict[key] = policy_net_state_dict[key] * BETA + target_net_state_dict[key] * (1 - BETA)
             # target_net.load_state_dict(target_net_state_dict)
-
             if done:
                 policy_net_state_dict = policy_net.state_dict()
                 target_net.load_state_dict(policy_net_state_dict)
@@ -204,14 +203,13 @@ if TRAIN:
                     writer.add_scalars('Reward', {'policy_net': reward}, i_episode)
                     break
 
-    PATH = '../checkpoints/last.pth'
+    PATH = './checkpoints/last.pth'
     torch.save(policy_net.state_dict(), PATH)
     writer.close()
     env.close()
     print('COMPLETE')
 
 else:
-
     # For accuracy check
     # env = gym.make('gym_navigation:NavigationGoal-v0', render_mode=None, track_id=1)
     # For visible check
