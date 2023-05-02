@@ -224,7 +224,7 @@ else:
     n_observations = len(state_observation)
 
     policy_net = DQLN(n_observations, n_actions).to(device)
-    PATH = '../neural_network/Best.pth'
+    PATH = './checkpoints/Best.pth'
     policy_net.load_state_dict(torch.load(PATH))
     not_terminated = 0
     success = 0
