@@ -49,7 +49,7 @@ class Navigation(Env):
         observation = self.get_observation()
         terminated = self.check_if_terminated()
         truncated = self.check_if_truncated()
-        self.reward += self.calculate_reward()
+        self.reward = self.calculate_reward()
         goal_reached = False
         if self.calculate_reward() == 500.0:  # GOAL_REWARD
             goal_reached = True
