@@ -21,8 +21,8 @@ class NavigationGoal(NavigationTrack):
     MAXIMUM_DISTANCE_OBSTACLE_GOAL = 6
     MAXIMUM_DISTANCE_ROBOT_GOAL = 8
 
-    DISTANCE_STANDARD_DEVIATION = 0.02
-    ANGLE_STANDARD_DEVIATION = 0.02
+    DISTANCE_STANDARD_DEVIATION = 0.01
+    ANGLE_STANDARD_DEVIATION = 0.01
 
     GOAL_REWARD = 500.0  # if you change this change also in navigation.py step() method
     BACKWARD_REWARD = -1.0
@@ -82,7 +82,7 @@ class NavigationGoal(NavigationTrack):
                 reward = self.FORWARD_REWARD * (angle / (math.pi / 4))
                 reward = 2.0 - reward
             else:
-                reward = 0.0
+                reward = 0
         else:
             if math.pi / 4 <= self.angle_from_goal <= math.pi / 2:
                 angle = math.pi / 2 - self.angle_from_goal
@@ -93,6 +93,7 @@ class NavigationGoal(NavigationTrack):
                 reward = self.BACKWARD_REWARD * (angle / (math.pi / 4))
             else:
                 reward = 0.0
+
         self.previous_distance_from_goal = self.distance_from_goal
         return reward
 

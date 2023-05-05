@@ -39,26 +39,28 @@ class Navigation(Env):
         self.render_mode = render_mode
         self.window = None
         self.clock = None
+        self.steps = 0
 
     def step(self, action) -> Tuple[np.ndarray, float, bool, bool, dict]:
 
         assert self.action_space.contains(action)
-
+        self.steps += 1
         self.perform_action(action)
 
         observation = self.get_observation()
         terminated = self.check_if_terminated()
-        truncated = self.check_if_truncated()
-        self.reward = self.calculate_reward()
-        goal_reached = False
-        if self.calculate_reward() == 500.0:  # GOAL_REWARD
-            goal_reached = True
-        info = self.create_info(goal_reached)
+
+        if self.steps >= 100:
+            self.reward = -100
+            truncated = True
+        else:
+            self.reward = self.calculate_reward()
+            truncated = False
 
         if self.render_mode == "human":
             self.render_frame()
 
-        return observation, self.reward, terminated, truncated, info
+        return observation, self.reward, terminated, truncated, {}
 
     @abstractmethod
     def perform_action(self, action) -> None:
@@ -100,6 +102,7 @@ class Navigation(Env):
         observation = self.get_observation()
         info = self.create_info()
         self.reward = 0
+        self.steps = 0
 
         if self.render_mode == "human":
             self.render_frame()

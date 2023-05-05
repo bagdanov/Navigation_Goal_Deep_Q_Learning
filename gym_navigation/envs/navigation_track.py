@@ -23,7 +23,7 @@ class NavigationTrack(Navigation):
 
     COLLISION_THRESHOLD = 0.4  # Robot radius
     COLLISION_REWARD = -100.0
-    FORWARD_REWARD = 2.0
+    FORWARD_REWARD = 2
 
     SCAN_ANGLES = (
         -math.pi / 8,
