@@ -10,11 +10,11 @@ import math
 import random
 
 TRAIN = False
-EPS = 1  # the starting value of epsilon
-EPS_DECAY = 0.999  # controls the rate of exponential decay of epsilon, higher means a slower decay
-MIN_EPS = 0.1
+EPS = 1.0  # the starting value of epsilon
+EPS_DECAY = 0.9999  # controls the rate of exponential decay of epsilon, higher means a slower decay
+MIN_EPS = 0.0001
 GAMMA = 0.99  # Discount Factor
-BATCH_SIZE = 128  # is the number of transitions random sampled from the replay buffer
+BATCH_SIZE = 256  # is the number of transitions random sampled from the replay buffer
 LEARNING_RATE = 1e-3  # is the learning rate of the Adam optimizer, should decrease (1e-5)
 steps_done = 0
 hidden_sizes = [128, 64]
@@ -52,7 +52,7 @@ def normalize(state: np.ndarray) -> np.ndarray:
 
 # Training loop
 if TRAIN:
-    env = gym.make('gym_navigation:NavigationGoal-v0', render_mode=None, track_id=1)
+    env = gym.make('gym_navigation:NavigationGoal-v0', render_mode='human', track_id=1)
     env.action_space.seed(42)  # 42
 
     state_observation, info = env.reset(seed=42)
@@ -72,14 +72,13 @@ if TRAIN:
     # Use Adam to optimize.
     optimizer = optim.Adam(q_function.parameters(), lr=LEARNING_RATE, weight_decay=1e-5)
 
-    replay_buffer = ReplayMemory(50000)
+    # Using a larger replay buffer.
+    replay_buffer = ReplayMemory(100000)
 
 
     # Epsilon-greedy action sampling.
     def select_action_epsilon(state):
-
         sample = random.random()
-
         if sample > EPS:
             with torch.no_grad():
                 # return index of action with the best Q value in the current state
@@ -105,7 +104,7 @@ if TRAIN:
         next_state_batch = torch.cat(batch.next_state)
         action_batch = torch.cat(batch.action)
         reward_batch = torch.cat(batch.reward)
-        done_batch = torch.Tensor(batch.done)
+        done_batch = torch.Tensor(batch.done).to(device)
 
         # policy_net computes Q(state, action taken)
         state_action_values = q_function(state_batch).gather(1, action_batch)
@@ -128,14 +127,12 @@ if TRAIN:
 
 
     def run_validation(env, policy_net, num=10):
-
         running_rewards = [0.0] * num
         for i in range(num):
             state_observation, info = env.reset()
             while True:
                 state_observation = normalize(state_observation)
                 state_observation = torch.tensor(state_observation, dtype=torch.float32, device=device).unsqueeze(0)
-
                 action = policy_net(state_observation).max(1)[1].view(1, 1)
                 state_observation, reward, terminated, truncated, _ = env.step(action.item())
                 running_rewards[i] += reward
@@ -146,9 +143,9 @@ if TRAIN:
 
 
     if torch.cuda.is_available():
-        num_episodes = 2001
+        num_episodes = 10000
     else:
-        num_episodes = 2001
+        num_episodes = 10000
 
     # Writer will output to ./runs/ directory by default
     writer = SummaryWriter("runs")
@@ -192,7 +189,7 @@ if TRAIN:
         EPS = max(MIN_EPS, EPS * EPS_DECAY)
 
         # Update target network.
-        if not i_episode % 10:
+        if not i_episode % 200:
             policy_net_state_dict = q_function.state_dict()
             target_q_function.load_state_dict(policy_net_state_dict)
 
@@ -200,8 +197,7 @@ if TRAIN:
         if not i_episode % 50:
             rewards = run_validation(env, q_function)
             writer.add_scalars('Reward', {'policy_net': np.mean(rewards)}, i_episode)
-            writer.add_scalars('Epsilon', {
-                'policy_net': EPS}, i_episode)
+            writer.add_scalars('Epsilon', {'policy_net': EPS}, i_episode)
 
     PATH = './checkpoints/last.pth'
     torch.save(q_function.state_dict(), PATH)

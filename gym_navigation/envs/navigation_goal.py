@@ -21,8 +21,8 @@ class NavigationGoal(NavigationTrack):
     MAXIMUM_DISTANCE_OBSTACLE_GOAL = 6
     MAXIMUM_DISTANCE_ROBOT_GOAL = 8
 
-    DISTANCE_STANDARD_DEVIATION = 0.01
-    ANGLE_STANDARD_DEVIATION = 0.01
+    DISTANCE_STANDARD_DEVIATION = 0.000001
+    ANGLE_STANDARD_DEVIATION = 0.000001
 
     GOAL_REWARD = 500.0  # if you change this change also in navigation.py step() method
     BACKWARD_REWARD = -1.0
